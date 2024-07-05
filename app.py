@@ -324,7 +324,7 @@ if st.session_state.get("quiz_mode"):
         if submit_button:
             correct_answers = 0
             for idx, quiz in enumerate(quizzes):
-                if st.session_state[f"answer_{idx}"] == quiz['answer']:
+                if st.session_state.get(f"answer_{idx}") == quiz['answer']:
                     correct_answers += 1
             st.write(f"You got {correct_answers} out of {len(quizzes)} correct.")
 
