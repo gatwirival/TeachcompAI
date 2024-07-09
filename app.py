@@ -7,7 +7,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Get the Google API key from the environment variables or secrets
-api_key = os.getenv("GOOGLE_API_KEY", st.secrets.get("GOOGLE_API_KEY"))
+api_key = os.getenv("GOOGLE_API_KEY")
+
+# Check if the API key is available
+if not api_key:
+    st.error("API Key not found. Please make sure to set the GOOGLE_API_KEY environment variable.")
+    st.stop()
 
 # Configure the Google Generative AI with the API key
 genai.configure(api_key=api_key)
@@ -18,23 +23,25 @@ st.set_page_config(
     page_icon="💻"
 )
 
-# Check if the Google API key is provided in the sidebar
-with st.sidebar:
-    if api_key:
-        st.success('API key already provided!', icon='✅')
-    else:
-        api_key = st.text_input('Enter Google API Key:', type='password')
-        if not api_key.startswith('AI'):
-            st.warning('Please enter your API Key!', icon='⚠️')
-        else:
-            st.success('Success!', icon='✅')
-    os.environ['GOOGLE_API_KEY'] = api_key
-    "[Get a Google Gemini API key](https://ai.google.dev/)"
-    "[View the source code](https://github.com/gatwirival/TeachcompAI)"
-
 # Set the title and caption for the Streamlit app
 st.title("💻 Computer Skills Tutor")
 st.caption("📚 A Streamlit app powered by Google Gemini to teach professionals basic computer skills")
+
+# Sidebar with links
+with st.sidebar:
+    st.markdown("[Get a Google Gemini API key](https://ai.google.dev/)")
+    st.markdown("[View the source code](https://github.com/gatwirival/TeachcompAI)")
+
+# Helper function to generate tutorials
+def generate_tutorial(skill_name, level, category):
+    prompt = f"Create a {category} tutorial for {skill_name} for a {level} level professional."
+    config = {
+        "temperature": 0.8,
+        "max_output_tokens": 2048,
+    }
+    model = genai.GenerativeModel("gemini-pro", generation_config=config)
+    response = model.generate_content(prompt)
+    return response.text if response else "Failed to generate tutorial."
 
 # Create tabs for different skill categories
 tab1, tab2, tab3 = st.tabs(["📝 Basic Office Skills", "🌐 Internet Skills", "🔧 Troubleshooting"])
@@ -47,26 +54,11 @@ with tab1:
     skill_name = st.text_input("Enter the office skill you want to learn (e.g., Excel basics, Word formatting):", key="skill_name", value="Excel basics")
     level = st.selectbox("Select your proficiency level:", ["Beginner", "Intermediate", "Advanced"], key="level")
 
-    prompt = f"""Create a tutorial for {skill_name} for a {level} level professional.
-    """
-
-    config = {
-        "temperature": 0.8,
-        "max_output_tokens": 2048,
-    }
-
-    generate_tutorial = st.button("Generate Tutorial", key="generate_tutorial")
-    model = genai.GenerativeModel("gemini-pro", generation_config=config)
-    if generate_tutorial and prompt:
+    if st.button("Generate Tutorial", key="generate_tutorial"):
         with st.spinner("Generating your tutorial using Gemini..."):
-            tutorial_tab, prompt_tab = st.tabs(["Tutorial", "Prompt"])
-            with tutorial_tab:
-                response = model.generate_content(prompt)
-                if response:
-                    st.write("Your tutorial:")
-                    st.write(response.text)
-            with prompt_tab:
-                st.text(prompt)
+            tutorial = generate_tutorial(skill_name, level, "office skills")
+            st.markdown("### Tutorial")
+            st.write(tutorial)
 
 # Code for Internet Skills
 with tab2:
@@ -76,26 +68,11 @@ with tab2:
     skill_name = st.text_input("Enter the internet skill you want to learn (e.g., safe browsing, effective searching):", key="internet_skill_name", value="safe browsing")
     level = st.selectbox("Select your proficiency level:", ["Beginner", "Intermediate", "Advanced"], key="internet_level")
 
-    prompt = f"""Create a tutorial for {skill_name} for a {level} level professional.
-    """
-
-    config = {
-        "temperature": 0.8,
-        "max_output_tokens": 2048,
-    }
-
-    generate_tutorial = st.button("Generate Tutorial", key="generate_internet_tutorial")
-    model = genai.GenerativeModel("gemini-pro", generation_config=config)
-    if generate_tutorial and prompt:
+    if st.button("Generate Tutorial", key="generate_internet_tutorial"):
         with st.spinner("Generating your tutorial using Gemini..."):
-            tutorial_tab, prompt_tab = st.tabs(["Tutorial", "Prompt"])
-            with tutorial_tab:
-                response = model.generate_content(prompt)
-                if response:
-                    st.write("Your tutorial:")
-                    st.write(response.text)
-            with prompt_tab:
-                st.text(prompt)
+            tutorial = generate_tutorial(skill_name, level, "internet skills")
+            st.markdown("### Tutorial")
+            st.write(tutorial)
 
 # Code for Troubleshooting
 with tab3:
@@ -105,23 +82,17 @@ with tab3:
     issue_name = st.text_input("Enter the issue you want to troubleshoot (e.g., computer won't start, slow internet):", key="issue_name", value="slow internet")
     level = st.selectbox("Select your proficiency level:", ["Beginner", "Intermediate", "Advanced"], key="troubleshoot_level")
 
-    prompt = f"""Create a troubleshooting guide for {issue_name} for a {level} level professional.
-    """
-
-    config = {
-        "temperature": 0.8,
-        "max_output_tokens": 2048,
-    }
-
-    generate_guide = st.button("Generate Troubleshooting Guide", key="generate_troubleshooting_guide")
-    model = genai.GenerativeModel("gemini-pro", generation_config=config)
-    if generate_guide and prompt:
+    if st.button("Generate Troubleshooting Guide", key="generate_troubleshooting_guide"):
         with st.spinner("Generating your troubleshooting guide using Gemini..."):
-            guide_tab, prompt_tab = st.tabs(["Guide", "Prompt"])
-            with guide_tab:
-                response = model.generate_content(prompt)
-                if response:
-                    st.write("Your guide:")
-                    st.write(response.text)
-            with prompt_tab:
-                st.text(prompt)
+            guide = generate_tutorial(issue_name, level, "troubleshooting")
+            st.markdown("### Guide")
+            st.write(guide)
+
+# Disclaimer
+st.markdown("---")
+st.markdown("### Disclaimer")
+st.markdown("""
+This app is intended for educational purposes only. The content generated by the Google Gemini API is based on the information provided and is not guaranteed to be accurate or comprehensive.
+Please use the tutorials and guides as a supplement to other learning resources.
+The developers of this app are not responsible for any errors or omissions in the content generated.
+""")
