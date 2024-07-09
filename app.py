@@ -40,91 +40,77 @@ st.title("💻 Computer Skills Tutor")
 st.caption("📚 A Streamlit app powered by Google Gemini to teach professionals basic computer skills")
 
 # Create tabs for different skill categories
-tab1, tab2, tab3 = st.tabs(["📝 Basic Office Skills", "🌐 Internet Skills", "🔧 Troubleshooting"])
+tabs = st.tabs(["📝 Basic Office Skills", "🌐 Internet Skills", "🔧 Troubleshooting", "🔍 Research Skills", "🎨 Design Skills"])
 
-# Code for Basic Office Skills
-with tab1:
+# Function to generate content
+def generate_content(skill_name, level, category):
+    prompt = f"Create a tutorial for {skill_name} for a {level} level professional in the category of {category}."
+    config = {
+        "temperature": 0.8,
+        "max_output_tokens": 2048,
+    }
+    model = genai.GenerativeModel("gemini-pro", generation_config=config)
+    with st.spinner("Generating your tutorial using Gemini..."):
+        response = model.generate_content(prompt)
+        if response:
+            st.write("### Your tutorial:")
+            st.write(response.text)
+
+# Basic Office Skills
+with tabs[0]:
     st.header("📄 Learn Basic Office Skills")
     st.subheader("📝 Generate Office Skills Tutorials")
 
     skill_name = st.text_input("Enter the office skill you want to learn (e.g., Excel basics, Word formatting):", key="skill_name", value="Excel basics")
-    level = st.selectbox("Select your proficiency level:", ["Beginner", "Intermediate", "Advanced"], key="level")
+    level = st.selectbox("Select your proficiency level:", ["Beginner", "Intermediate", "Advanced"], key="level_office")
 
-    prompt = f"""Create a tutorial for {skill_name} for a {level} level professional."""
+    if st.button("Generate Tutorial", key="generate_office_tutorial"):
+        generate_content(skill_name, level, "Office Skills")
 
-    config = {
-        "temperature": 0.8,
-        "max_output_tokens": 2048,
-    }
-
-    generate_tutorial = st.button("Generate Tutorial", key="generate_tutorial")
-    model = genai.GenerativeModel("gemini-pro", generation_config=config)
-    if generate_tutorial and prompt:
-        with st.spinner("Generating your tutorial using Gemini..."):
-            tutorial_tab, prompt_tab = st.tabs(["Tutorial", "Prompt"])
-            with tutorial_tab:
-                response = model.generate_content(prompt)
-                if response:
-                    st.write("### Your tutorial:")
-                    st.write(response.text)
-            with prompt_tab:
-                st.code(prompt, language='markdown')
-
-# Code for Internet Skills
-with tab2:
+# Internet Skills
+with tabs[1]:
     st.header("🌐 Learn Internet Skills")
     st.subheader("🔍 Generate Internet Skills Tutorials")
 
     skill_name = st.text_input("Enter the internet skill you want to learn (e.g., safe browsing, effective searching):", key="internet_skill_name", value="safe browsing")
-    level = st.selectbox("Select your proficiency level:", ["Beginner", "Intermediate", "Advanced"], key="internet_level")
+    level = st.selectbox("Select your proficiency level:", ["Beginner", "Intermediate", "Advanced"], key="level_internet")
 
-    prompt = f"""Create a tutorial for {skill_name} for a {level} level professional."""
+    if st.button("Generate Tutorial", key="generate_internet_tutorial"):
+        generate_content(skill_name, level, "Internet Skills")
 
-    config = {
-        "temperature": 0.8,
-        "max_output_tokens": 2048,
-    }
-
-    generate_tutorial = st.button("Generate Tutorial", key="generate_internet_tutorial")
-    model = genai.GenerativeModel("gemini-pro", generation_config=config)
-    if generate_tutorial and prompt:
-        with st.spinner("Generating your tutorial using Gemini..."):
-            tutorial_tab, prompt_tab = st.tabs(["Tutorial", "Prompt"])
-            with tutorial_tab:
-                response = model.generate_content(prompt)
-                if response:
-                    st.write("### Your tutorial:")
-                    st.write(response.text)
-            with prompt_tab:
-                st.code(prompt, language='markdown')
-
-# Code for Troubleshooting
-with tab3:
+# Troubleshooting
+with tabs[2]:
     st.header("🔧 Learn Troubleshooting Skills")
     st.subheader("🛠️ Generate Troubleshooting Tutorials")
 
     issue_name = st.text_input("Enter the issue you want to troubleshoot (e.g., computer won't start, slow internet):", key="issue_name", value="slow internet")
-    level = st.selectbox("Select your proficiency level:", ["Beginner", "Intermediate", "Advanced"], key="troubleshoot_level")
+    level = st.selectbox("Select your proficiency level:", ["Beginner", "Intermediate", "Advanced"], key="level_troubleshooting")
 
-    prompt = f"""Create a troubleshooting guide for {issue_name} for a {level} level professional."""
+    if st.button("Generate Troubleshooting Guide", key="generate_troubleshooting_guide"):
+        generate_content(issue_name, level, "Troubleshooting")
 
-    config = {
-        "temperature": 0.8,
-        "max_output_tokens": 2048,
-    }
+# Research Skills
+with tabs[3]:
+    st.header("🔍 Learn Research Skills")
+    st.subheader("📚 Generate Research Skills Tutorials")
 
-    generate_guide = st.button("Generate Troubleshooting Guide", key="generate_troubleshooting_guide")
-    model = genai.GenerativeModel("gemini-pro", generation_config=config)
-    if generate_guide and prompt:
-        with st.spinner("Generating your troubleshooting guide using Gemini..."):
-            guide_tab, prompt_tab = st.tabs(["Guide", "Prompt"])
-            with guide_tab:
-                response = model.generate_content(prompt)
-                if response:
-                    st.write("### Your guide:")
-                    st.write(response.text)
-            with prompt_tab:
-                st.code(prompt, language='markdown')
+    skill_name = st.text_input("Enter the research skill you want to learn (e.g., literature review, data analysis):", key="research_skill_name", value="literature review")
+    level = st.selectbox("Select your proficiency level:", ["Beginner", "Intermediate", "Advanced"], key="level_research")
+
+    if st.button("Generate Tutorial", key="generate_research_tutorial"):
+        generate_content(skill_name, level, "Research Skills")
+
+# Design Skills
+with tabs[4]:
+    st.header("🎨 Learn Design Skills")
+    st.subheader("🖌️ Generate Design Skills Tutorials")
+
+    skill_name = st.text_input("Enter the design skill you want to learn (e.g., graphic design, UI/UX):", key="design_skill_name", value="graphic design")
+    level = st.selectbox("Select your proficiency level:", ["Beginner", "Intermediate", "Advanced"], key="level_design")
+
+    if st.button("Generate Tutorial", key="generate_design_tutorial"):
+        generate_content(skill_name, level, "Design Skills")
+
 # Add a disclaimer at the bottom of the app
 st.markdown("---")
 st.markdown("### Disclaimer")
