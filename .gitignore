@@ -4,9 +4,7 @@ __pycache__/
 *.so
 *.ipynb_checkpoints
 
-# Environment
-.env
-*.env
+.streamlit
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -94,3 +92,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+service-account.json
