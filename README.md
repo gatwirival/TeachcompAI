@@ -20,7 +20,7 @@ cd TeachcompAI
 pip install -r requirements.txt
 ```
 3. Set up your environment variables:
-- Create a `.env` file and add your Google API key:
+- Create a `.toml` file and add your Google API key:
   ```
   GOOGLE_API_KEY=your_api_key_here
   ```
