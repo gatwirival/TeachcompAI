@@ -32,7 +32,7 @@ with st.sidebar:
             st.success('Success!', icon='✅')
     os.environ['GOOGLE_API_KEY'] = api_key
 
-    st.markdown("[Get a Google Gemini API key](https://ai.google.dev/)")
+    st.markdown("[Get a Google Gemini API key]( https://makersuite.google.com/app/home)")
     st.markdown("[View the source code](https://github.com/gatwirival/TeachcompAI)")
 
 # Set the title and caption for the Streamlit app
