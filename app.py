@@ -3,16 +3,16 @@ import streamlit as st
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Loads environment variables from .env file
 load_dotenv()
 
-# Get the Google API key from the environment variables or secrets
+# Gets the Google API key from the environment variables or secrets
 api_key = os.getenv("GOOGLE_API_KEY", st.secrets.get("GOOGLE_API_KEY"))
 
-# Configure the Google Generative AI with the API key
+# Configures the Google Generative AI with the API key
 genai.configure(api_key=api_key)
 
-# Set the page configuration for the Streamlit app
+# Sets the page configuration for the Streamlit app
 st.set_page_config(
     page_title="Computer Skills Tutor",
     page_icon="💻",
@@ -35,11 +35,11 @@ with st.sidebar:
     st.markdown("[Get a Google Gemini API key]( https://makersuite.google.com/app/home)")
     st.markdown("[View the source code](https://github.com/gatwirival/TeachcompAI)")
 
-# Set the title and caption for the Streamlit app
+# Sets the title and caption for the Streamlit app
 st.title("💻 Computer Skills Tutor")
 st.caption("📚 A Streamlit app powered by Google Gemini to teach professionals basic computer skills")
 
-# Create tabs for different skill categories
+# Creates tabs for different skill categories
 tabs = st.tabs(["📝 Basic Office Skills", "🌐 Internet Skills", "🔧 Troubleshooting", "🔍 Research Skills", "🎨 Design Skills"])
 
 # Function to generate content
@@ -111,7 +111,6 @@ with tabs[4]:
     if st.button("Generate Tutorial", key="generate_design_tutorial"):
         generate_content(skill_name, level, "Design Skills")
 
-# Add a disclaimer at the bottom of the app
 st.markdown("---")
 st.markdown("### Disclaimer")
 st.markdown("""
